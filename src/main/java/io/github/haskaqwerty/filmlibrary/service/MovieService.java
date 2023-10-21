@@ -8,7 +8,7 @@ public interface MovieService {
     boolean create(Movie movie);
     List<Movie> readAll();
     Movie read(int id);
-    boolean update(Movie movie,int id);
+    boolean update(Movie movie, int id);
     boolean delete(int id);
 
 

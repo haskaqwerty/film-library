@@ -17,8 +17,8 @@ public class FilmLibraryApplication {
 		example.setName("Крик часть первая");
 		movieService.update(example,1);
 		movieService.read(1);
-		Movie movieCreated = new Movie(3,"Мгла",2007,"Фрэнк","Дарабонт","Ужасы");
-		movieService.create(movieCreated);
+//		Movie movieCreated = new Movie(3,"Мгла",2007,"Фрэнк","Дарабонт","Ужасы");
+//		movieService.create(movieCreated);
 		movieService.readAll();
 
 
