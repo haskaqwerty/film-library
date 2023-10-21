@@ -9,7 +9,7 @@ public interface MovieDao {
      Movie getMovieById(int id);
 
     List<Movie> getAll();
-    void create(Movie movie);
+    boolean create(Movie movie);
     //INSERT INTO ? (ProductName, Price, Manufacturer)
     //VALUES ('iPhone X', 71000, 'Apple');
     boolean update(Movie movie,int id);

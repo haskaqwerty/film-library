@@ -91,13 +91,79 @@ public class MovieDaoImpl implements MovieDao {
     }
 
     @Override
-    public void create(Movie movie) {
+    public boolean create(Movie movie) {
+        boolean result = false;
+        sqlExpression = "insert into movies values (?,?,?,?,?,?)";
+        Connection connection = null;
+        try {
+            connection = ConnectionManagerImpl.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlExpression);
+            preparedStatement.setInt(ID_INDEX,movie.getId());
+            preparedStatement.setString(NAME_INDEX,movie.getName());
+            preparedStatement.setInt(RELEASED_YEAR_INDEX,movie.getReleasedYear());
+            preparedStatement.setString(DIRECTOR_FIRST_NAME_INDEX,movie.getDirectorFirstName());
+            preparedStatement.setString(DIRECTOR_LAST_NAME_INDEX,movie.getDirectorLastName());
+            preparedStatement.setString(GENRE_INDEX,movie.getGenre());
+            int resultSet = preparedStatement.executeUpdate();
+            if (resultSet == 0) {
+                System.out.println("Фильм не добавлен");
+                preparedStatement.close();
+                connection.close();
+                return result;
+            } else{
+                preparedStatement.close();
+                connection.close();}
+            System.out.println("Фильм добавлен");
+            result = true;
+            return  result;
+        } catch (SQLException e) {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+
 
     }
 
     @Override
     public boolean update(Movie movie, int id) {
-        return false;
+        boolean result = false;
+        sqlExpression = "update movies set name=?,releasedyear=?,directorfirstname=?,directorlastname=?,genre=?  where id = ?";
+        Connection connection = null;
+        try {
+            connection = ConnectionManagerImpl.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlExpression);
+            preparedStatement.setString(NAME_INDEX-1,movie.getName());
+            preparedStatement.setInt(RELEASED_YEAR_INDEX-1,movie.getReleasedYear());
+            preparedStatement.setString(DIRECTOR_FIRST_NAME_INDEX-1,movie.getDirectorFirstName());
+            preparedStatement.setString(DIRECTOR_LAST_NAME_INDEX-1,movie.getDirectorLastName());
+            preparedStatement.setString(GENRE_INDEX-1,movie.getGenre());
+            preparedStatement.setInt(ID_INDEX+5,id);
+            int resultSet = preparedStatement.executeUpdate();
+
+            if (resultSet == 0) {
+                System.out.println("Фильм не обновлен");
+                preparedStatement.close();
+                connection.close();
+                return result;
+            } else{
+            preparedStatement.close();
+            connection.close();}
+            System.out.println("Фильм обновлен");
+            result = true;
+            return  result;
+        } catch (SQLException e) {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override

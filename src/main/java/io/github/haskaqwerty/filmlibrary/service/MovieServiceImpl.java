@@ -11,8 +11,9 @@ import java.util.List;
 public class MovieServiceImpl implements MovieService{
     MovieDaoImpl movieRepository = new MovieDaoImpl();
     @Override
-    public void create(Movie movie) {
-
+    public boolean create(Movie movie) {
+        boolean result = movieRepository.create(movie);
+        return result;
     }
 
     @Override
@@ -33,7 +34,8 @@ public class MovieServiceImpl implements MovieService{
 
     @Override
     public boolean update(Movie movie, int id) {
-        return false;
+        boolean result = movieRepository.update(movie, id);
+        return result;
     }
 
     @Override
