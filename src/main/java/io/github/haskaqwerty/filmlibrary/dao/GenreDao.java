@@ -5,7 +5,7 @@ import io.github.haskaqwerty.filmlibrary.pojo.Genre;
 import java.util.List;
 import java.util.Optional;
 
-public interface GenreRepository {
+public interface GenreDao {
     Optional<Genre> getGenreById(int id);
     List<Genre> getAll();
     void create(Genre genre);

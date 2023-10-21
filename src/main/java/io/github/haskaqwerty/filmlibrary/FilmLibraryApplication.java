@@ -10,7 +10,10 @@ public class FilmLibraryApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(FilmLibraryApplication.class, args);
 		MovieServiceImpl movieService = new MovieServiceImpl();
-		movieService.read(1);
+		movieService.read(2);
+		//movieService.delete(1);
+		movieService.readAll();
+
 
 
 

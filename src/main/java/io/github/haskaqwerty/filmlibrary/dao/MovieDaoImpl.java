@@ -3,6 +3,7 @@ package io.github.haskaqwerty.filmlibrary.dao;
 import io.github.haskaqwerty.filmlibrary.pojo.Movie;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieDaoImpl implements MovieDao {
@@ -22,12 +23,12 @@ public class MovieDaoImpl implements MovieDao {
     public Movie getMovieById(int movieId) {
         Movie result = null;
         sqlExpression = "select * from movies where id = ? limit 1";
-        ResultSet resultSet = null;
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             final PreparedStatement preparedStatement = connection.prepareStatement(sqlExpression);
-        ) {
+        Connection connection = null;
+        try {
+            connection = ConnectionManagerImpl.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlExpression);
             preparedStatement.setInt(ID_INDEX, movieId);
-            resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
             result = Movie.builder()
                     .id(resultSet.getInt(1))
@@ -38,36 +39,55 @@ public class MovieDaoImpl implements MovieDao {
                     .genre(resultSet.getString(GENRE_INDEX))
                     .build();
             resultSet.close();
+            preparedStatement.close();
+            connection.close();
         } catch (SQLException e) {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
             throw new RuntimeException(e);
-        } finally {
         }
 
-//        try {
-//            Class.forName("org.postgresql.Driver");
-//            Connection connection = DriverManager.getConnection(url, username, password);
-//            PreparedStatement preparedStatement = connection.prepareStatement(sqlExpression);
-//            preparedStatement.setInt(1, movieId);
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            resultSet.next();
-//            result = Movie.builder()
-//                    .id(resultSet.getInt(1))
-//                    .build();
-//            resultSet.close();
-//            preparedStatement.close();
-//            connection.close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
         return result;
     }
 
     @Override
     public List<Movie> getAll() {
-        return null;
+        List<Movie> result = new ArrayList<>();
+        sqlExpression = "select * from movies";
+        Connection connection = null;
+        try {
+            connection = ConnectionManagerImpl.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sqlExpression);
+            while (resultSet.next()) {
+                result.add(Movie.builder()
+                        .id(resultSet.getInt(1))
+                        .name(resultSet.getString(NAME_INDEX))
+                        .releasedYear(resultSet.getInt(RELEASED_YEAR_INDEX))
+                        .directorFirstName(resultSet.getString(DIRECTOR_FIRST_NAME_INDEX))
+                        .directorLastName(resultSet.getString(DIRECTOR_LAST_NAME_INDEX))
+                        .genre(resultSet.getString(GENRE_INDEX))
+                        .build());
+            }
+
+                resultSet.close();
+                statement.close();
+                connection.close();
+
+        } catch (SQLException e) {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+
+
+        return result;
     }
 
     @Override
@@ -82,7 +102,31 @@ public class MovieDaoImpl implements MovieDao {
 
     @Override
     public boolean delete(int id) {
-        return false;
+        boolean result = false;
+        sqlExpression = "delete from movies where id = ? ";
+        Connection connection = null;
+        try {
+            connection = ConnectionManagerImpl.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlExpression);
+            preparedStatement.setInt(ID_INDEX, id);
+            int res = preparedStatement.executeUpdate();
+            if (res != 0) {
+                result=true;
+            }
+            preparedStatement.close();
+            connection.close();
+            return result;
+        } catch (SQLException e) {
+            try {
+                connection.close();
+
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+
+
     }
 
 }

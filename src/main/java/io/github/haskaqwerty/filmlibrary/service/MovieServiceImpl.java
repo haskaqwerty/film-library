@@ -4,6 +4,7 @@ import io.github.haskaqwerty.filmlibrary.dao.MovieDaoImpl;
 import io.github.haskaqwerty.filmlibrary.pojo.Movie;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,14 +17,17 @@ public class MovieServiceImpl implements MovieService{
 
     @Override
     public List<Movie> readAll() {
-        return null;
+        List<Movie> movieList = new ArrayList<>();
+        movieList = movieRepository.getAll();
+        System.out.println(movieList.toString());
+        return movieList;
     }
 
     @Override
     public Movie read(int id) {
         Movie movie = new Movie();
         movie=movieRepository.getMovieById(id);
-        movie.toString();
+        System.out.println(movie.toString());
         return movie;
     }
 
@@ -34,6 +38,7 @@ public class MovieServiceImpl implements MovieService{
 
     @Override
     public boolean delete(int id) {
-        return false;
+        boolean result = movieRepository.delete(id);
+        return result;
     }
 }
