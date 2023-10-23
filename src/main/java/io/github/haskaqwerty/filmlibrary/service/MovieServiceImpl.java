@@ -9,17 +9,17 @@ import java.util.List;
 
 @Service
 public class MovieServiceImpl implements MovieService{
-    MovieDaoImpl movieRepository = new MovieDaoImpl();
+    MovieDaoImpl movieDao = new MovieDaoImpl();
     @Override
     public boolean create(Movie movie) {
-        boolean result = movieRepository.create(movie);
+        boolean result = movieDao.create(movie);
         return result;
     }
 
     @Override
     public List<Movie> readAll() {
         List<Movie> movieList = new ArrayList<>();
-        movieList = movieRepository.getAll();
+        movieList = movieDao.getAll();
         System.out.println(movieList.toString());
         return movieList;
     }
@@ -27,20 +27,20 @@ public class MovieServiceImpl implements MovieService{
     @Override
     public Movie read(int id) {
         Movie movie = new Movie();
-        movie=movieRepository.getMovieById(id);
+        movie= movieDao.getMovieById(id);
         System.out.println(movie.toString());
         return movie;
     }
 
     @Override
     public boolean update(Movie movie, int id) {
-        boolean result = movieRepository.update(movie, id);
+        boolean result = movieDao.update(movie, id);
         return result;
     }
 
     @Override
     public boolean delete(int id) {
-        boolean result = movieRepository.delete(id);
+        boolean result = movieDao.delete(id);
         return result;
     }
 }
