@@ -1,10 +1,10 @@
 package io.github.haskaqwerty.filmlibrary.pojo;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
+@Builder
+@NoArgsConstructor
 @Setter
 @ToString
 public class Genre {

@@ -1,14 +1,16 @@
 package io.github.haskaqwerty.filmlibrary.pojo;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 
 @Getter
+@Builder
 @Setter
+@NoArgsConstructor
 @ToString
+@AllArgsConstructor
+
 public class Director {
     private int id;
     private String lastname;

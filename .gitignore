@@ -162,6 +162,6 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/java,windows,maven,intellij+all
 /src/main/resources/pagesExample/editPage.jsp
-/src/main/webapp/WEB-INF/pages/films.jsp
+/src/main/web/WEB-INF/movies.jsp
 /src/main/resources/pagesExample/
 /src/main/resources/pagesExample/

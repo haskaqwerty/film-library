@@ -1,42 +1,32 @@
 package io.github.haskaqwerty.filmlibrary.dao;
 
-import io.github.haskaqwerty.filmlibrary.pojo.Movie;
+import io.github.haskaqwerty.filmlibrary.pojo.Genre;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovieDaoImpl implements MovieDao {
+public class GenreDaoImpl implements GenreDao{
     public static final int ID_INDEX = 1;
     public static final int NAME_INDEX = 2;
-    public static final int RELEASED_YEAR_INDEX = 3;
-    public static final int DIRECTOR_FIRST_NAME_INDEX = 4;
-    public static final int DIRECTOR_LAST_NAME_INDEX = 5;
-    public static final int GENRE_INDEX = 6;
     private String url = "jdbc:postgresql://localhost:5432/postgres";
     private String username = "postgresuser";
     private String password = "postgres";
     static String sqlExpression;
-
-    //ArrayList<Movie>list = new ArrayList<Movie>(SimpleRepository.connectDb());
     @Override
-    public Movie getMovieById(int movieId) {
-        Movie result = null;
-        sqlExpression = "select * from movies where id = ? limit 1";
+    public Genre getGenreById(int id) {
+        Genre result = null;
+        sqlExpression = "select * from genres where id = ? limit 1";
         Connection connection = null;
         try {
             connection = ConnectionManagerImpl.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sqlExpression);
-            preparedStatement.setInt(ID_INDEX, movieId);
+            preparedStatement.setInt(ID_INDEX, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            result = Movie.builder()
+            result = Genre.builder()
                     .id(resultSet.getInt(1))
                     .name(resultSet.getString(NAME_INDEX))
-                    .releasedYear(resultSet.getInt(RELEASED_YEAR_INDEX))
-                    .directorFirstName(resultSet.getString(DIRECTOR_FIRST_NAME_INDEX))
-                    .directorLastName(resultSet.getString(DIRECTOR_LAST_NAME_INDEX))
-                    .genre(resultSet.getString(GENRE_INDEX))
                     .build();
             resultSet.close();
             preparedStatement.close();
@@ -51,31 +41,28 @@ public class MovieDaoImpl implements MovieDao {
         }
 
         return result;
-    }
+
+}
 
     @Override
-    public List<Movie> getAll() {
-        List<Movie> result = new ArrayList<>();
-        sqlExpression = "select * from movies";
+    public List<Genre> getAll() {
+        List<Genre> result = new ArrayList<>();
+        sqlExpression = "select * from genres";
         Connection connection = null;
         try {
             connection = ConnectionManagerImpl.getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sqlExpression);
             while (resultSet.next()) {
-                result.add(Movie.builder()
+                result.add(Genre.builder()
                         .id(resultSet.getInt(1))
                         .name(resultSet.getString(NAME_INDEX))
-                        .releasedYear(resultSet.getInt(RELEASED_YEAR_INDEX))
-                        .directorFirstName(resultSet.getString(DIRECTOR_FIRST_NAME_INDEX))
-                        .directorLastName(resultSet.getString(DIRECTOR_LAST_NAME_INDEX))
-                        .genre(resultSet.getString(GENRE_INDEX))
                         .build());
             }
 
-                resultSet.close();
-                statement.close();
-                connection.close();
+            resultSet.close();
+            statement.close();
+            connection.close();
 
         } catch (SQLException e) {
             try {
@@ -91,29 +78,25 @@ public class MovieDaoImpl implements MovieDao {
     }
 
     @Override
-    public boolean create(Movie movie) {
+    public boolean create(Genre genre) {
         boolean result = false;
-        sqlExpression = "insert into movies values (?,?,?,?,?,?)";
+        sqlExpression = "insert into genres values (?,?)";
         Connection connection = null;
         try {
             connection = ConnectionManagerImpl.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sqlExpression);
-            preparedStatement.setInt(ID_INDEX,movie.getId());
-            preparedStatement.setString(NAME_INDEX,movie.getName());
-            preparedStatement.setInt(RELEASED_YEAR_INDEX,movie.getReleasedYear());
-            preparedStatement.setString(DIRECTOR_FIRST_NAME_INDEX,movie.getDirectorFirstName());
-            preparedStatement.setString(DIRECTOR_LAST_NAME_INDEX,movie.getDirectorLastName());
-            preparedStatement.setString(GENRE_INDEX,movie.getGenre());
+            preparedStatement.setInt(ID_INDEX,genre.getId());
+            preparedStatement.setString(NAME_INDEX,genre.getName());
             int resultSet = preparedStatement.executeUpdate();
             if (resultSet == 0) {
-                System.out.println("Фильм не добавлен");
+                System.out.println("Жанр не добавлен");
                 preparedStatement.close();
                 connection.close();
                 return result;
             } else{
                 preparedStatement.close();
                 connection.close();}
-            System.out.println("Фильм добавлен");
+            System.out.println("Жанр добавлен");
             result = true;
             return  result;
         } catch (SQLException e) {
@@ -129,30 +112,25 @@ public class MovieDaoImpl implements MovieDao {
     }
 
     @Override
-    public boolean update(Movie movie, int id) {
+    public boolean update(Genre genre, int id) {
         boolean result = false;
-        sqlExpression = "update movies set name=?,releasedyear=?,directorfirstname=?,directorlastname=?,genre=?  where id = ?";
+        sqlExpression = "update genres set name=?  where id = ?";
         Connection connection = null;
         try {
             connection = ConnectionManagerImpl.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sqlExpression);
-            preparedStatement.setString(NAME_INDEX-1,movie.getName());
-            preparedStatement.setInt(RELEASED_YEAR_INDEX-1,movie.getReleasedYear());
-            preparedStatement.setString(DIRECTOR_FIRST_NAME_INDEX-1,movie.getDirectorFirstName());
-            preparedStatement.setString(DIRECTOR_LAST_NAME_INDEX-1,movie.getDirectorLastName());
-            preparedStatement.setString(GENRE_INDEX-1,movie.getGenre());
-            preparedStatement.setInt(ID_INDEX+5,id);
+            preparedStatement.setString(NAME_INDEX-1,genre.getName());
+            preparedStatement.setInt(ID_INDEX+1,id);
             int res = preparedStatement.executeUpdate();
-
             if (res == 0) {
-                System.out.println("Фильм не обновлен");
+                System.out.println("Жанр не обновлен");
                 preparedStatement.close();
                 connection.close();
                 return result;
             } else{
-            preparedStatement.close();
-            connection.close();}
-            System.out.println("Фильм обновлен");
+                preparedStatement.close();
+                connection.close();}
+            System.out.println("Жанр обновлен");
             result = true;
             return  result;
         } catch (SQLException e) {
@@ -163,13 +141,12 @@ public class MovieDaoImpl implements MovieDao {
             }
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
     public boolean delete(int id) {
         boolean result = false;
-        sqlExpression = "delete from movies where id = ? ";
+        sqlExpression = "delete from genres where id = ? ";
         Connection connection = null;
         try {
             connection = ConnectionManagerImpl.getConnection();
@@ -192,7 +169,5 @@ public class MovieDaoImpl implements MovieDao {
             throw new RuntimeException(e);
         }
 
-
     }
-
 }
